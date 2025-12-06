@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -11,11 +12,13 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JWT _jwt;
+    private readonly IMapper _mapper;
   
-    public AuthService(UserManager<ApplicationUser> userManager,IOptions<JWT> jwt)
+    public AuthService(UserManager<ApplicationUser> userManager,IOptions<JWT> jwt, IMapper mapper)
     {
         _userManager = userManager;
         _jwt = jwt.Value;
+        _mapper = mapper;
        
     }
     public async Task<AuthModel> GetTokenAsync(TokenRequestModel model)
@@ -122,15 +125,9 @@ public class AuthService : IAuthService
             return new AuthModel { Message = "Username is already registered!" };
         }
 
+        var user = _mapper.Map<ApplicationUser>(model);
+        user.ConcurrencyStamp = Guid.NewGuid().ToString();  
 
-        var user = new ApplicationUser
-        {
-            Email = model.Email,
-            UserName = model.UserName,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            SecurityStamp = Guid.NewGuid().ToString()
-        };
 
         var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -147,16 +144,15 @@ public class AuthService : IAuthService
         await _userManager.AddToRoleAsync(user, "User");
         var token = await CreateJwtToken(user);
 
-        return new AuthModel
-        {
-            Email = user.Email,
-            UserName = user.UserName,
-            ExpiresOn = token.ValidTo,
-            IsAuthenticated = true,
-            Roles = new List<string> { "User" },
-            Token = new JwtSecurityTokenHandler().WriteToken(token),
-            Message = "User Registered Successfully"
-        };
+        var authModel = _mapper.Map<AuthModel>(user);
+        authModel.Roles = new List<string> { AspRoles.User };
+        authModel.Token = new JwtSecurityTokenHandler().WriteToken(token);
+        authModel.Message = "User Registered Successfully";
+        authModel.IsAuthenticated = true;
+
+
+        return authModel;
+
     }
 
     #region helpers
@@ -175,9 +171,9 @@ public class AuthService : IAuthService
 
         var claims = new[]
         {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
                 new Claim("uid", user.Id)
             }.Union(userClaims).Union(roleClaims);
 

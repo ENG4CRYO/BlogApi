@@ -15,8 +15,8 @@ namespace Blog.Infrastructure.Migrations
                 columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
                 values: new object[,]
                 {
-                    { "1", "Admin", "ADMIN", Guid.NewGuid().ToString() },
-                    { "2", "User", "USER", Guid.NewGuid().ToString() }
+                    { "1", AspRoles.Admin, AspRoles.Admin.ToUpper(), Guid.NewGuid().ToString() },
+                    { "2", AspRoles.User, AspRoles.User.ToUpper(), Guid.NewGuid().ToString() }
                 }
             );
         }
