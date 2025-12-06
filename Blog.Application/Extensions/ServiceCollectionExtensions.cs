@@ -6,7 +6,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection service, IConfiguration configuration)
     {
-        
+        service.AddScoped<IAuthService, AuthService>();
         return service;
     }
 }
