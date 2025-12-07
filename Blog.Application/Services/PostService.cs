@@ -33,14 +33,21 @@ public class PostService : IPostService
         }
 
         _postRepo.Delete(post);
+        await _postRepo.SaveChangesAsync();
         return true;
     }
 
-    public async Task<IEnumerable<PostDto>> GetAllPostsAync(string userId)
+    public async Task<IEnumerable<PostDto>> GetAllPostsAync()
+    {
+        var posts = await _postRepo.GetAllAsync();
+        return _mapper.Map<IEnumerable<PostDto>>(posts);
+
+    }
+
+    public async Task<IEnumerable<PostDto>> GetMyPostsAync(string userId)
     {
         var posts = await _postRepo.GetPostsByUserIdAsync(userId);
         return _mapper.Map<IEnumerable<PostDto>>(posts);
-
     }
 
     public async Task<PostDto> GetPostByIdAsync(int id)

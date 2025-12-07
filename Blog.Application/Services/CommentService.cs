@@ -39,6 +39,7 @@ public class CommentService : ICommentService
         }
 
         _commentRepo.Delete(comment);
+        await _commentRepo.SaveChangesAsync();
         return true;
     }
 
