@@ -49,7 +49,7 @@ namespace Blog.Api.Controllers
             var comment = await _commentService.AddCommentAsync(createCommentDto, userId);
 
             if (comment == null)
-                return BadRequest("لا يمكن إضافة تعليق (قد يكون البوست غير موجود)");
+                return BadRequest("Cannot add Comment (post does not exist)");
 
      
             return CreatedAtAction(nameof(GetById), new { id = comment.Id }, comment);
