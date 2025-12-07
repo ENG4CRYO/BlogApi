@@ -67,7 +67,7 @@ public class CommentService : ICommentService
         var comment = await _commentRepo.GetByIdAsync(id);   
         if (comment == null) return null;
 
-        if (updateCommentDto.UserId != userId)
+        if (comment.UserId != userId)
         {
             return null;
         }
