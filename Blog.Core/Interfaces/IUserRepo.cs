@@ -1,3 +1,3 @@
-﻿public interface IUserRepo
+﻿public interface IUserRepo : IGenericRepo<ApplicationUser>
 {
 }

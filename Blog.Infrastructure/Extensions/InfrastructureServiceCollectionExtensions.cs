@@ -16,6 +16,13 @@ public static class InfrastructureServiceCollectionExtensions
         service.AddIdentity<ApplicationUser, IdentityRole>().
             AddEntityFrameworkStores<AppDbContext>();
 
+
+        service.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>));
+
+        service.AddScoped<IPostRepo, PostRepo>();
+        service.AddScoped<ICommentRepo, CommentRepo>();
+        service.AddScoped<IUserRepo, UserRepo>();
+
         service.Configure<JWT>(configuration.GetSection("JWT"));
 
         service.AddAuthentication(options =>
