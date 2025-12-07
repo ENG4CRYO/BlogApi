@@ -57,21 +57,18 @@ public class GenericRepo<T> : IGenericRepo<T> where T : class
     public async Task<T> AddAsync(T entity)
     {
         await _dbSet.AddAsync(entity);
-        _context.SaveChanges();
         return entity;
     }
 
     public T Update (T entity)
     {
         _dbSet.Update(entity);
-        _context.SaveChanges();
         return entity;
     }
 
     public void Delete(T entity)
     {
         _dbSet.Remove(entity);
-        _context.SaveChanges();
     }
 
     public async Task SaveChangesAsync()
