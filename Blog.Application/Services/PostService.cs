@@ -24,31 +24,41 @@ public class PostService : IPostService
 
     public async Task<bool> DeletePostAsync(int postId, string currentUserId, bool isAdmin)
     {
-        var post = _postRepo.GetByIdAsync(postId);
+        var post = await _postRepo.GetByIdAsync(postId);
         if (post == null) return false;
 
-        if (post.Result.UserId != currentUserId && !isAdmin)
+        if (post.UserId != currentUserId && !isAdmin)
         {
             return false;
         }
 
-        _postRepo.Delete(post.Result);
+        _postRepo.Delete(post);
         return true;
     }
 
-    public Task<IEnumerable<PostDto>> GetAllPostsAync(string userId)
+    public async Task<IEnumerable<PostDto>> GetAllPostsAync(string userId)
     {
-        throw new NotImplementedException();
+        var posts = await _postRepo.GetPostsByUserIdAsync(userId);
+        return _mapper.Map<IEnumerable<PostDto>>(posts);
+
     }
 
-    public Task<PostDto> GetPostByIdAsync(int id)
+    public async Task<PostDto> GetPostByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var post =await _postRepo.GetByIdAsync(id);
+        return _mapper.Map<PostDto>(post);
     }
 
-    public Task<PostDto> UpdatePostAsync(int id, UpdatePostDto updatePostDto, string userId)
+    public async Task<PostDto> UpdatePostAsync(int id, UpdatePostDto updatePostDto, string userId)
     {
-        throw new NotImplementedException();
+        var post = await _postRepo.GetByIdAsync(id);
+        if (post == null || post.UserId != userId)
+        {
+            return null;
+        }
+        _mapper.Map(updatePostDto, post);
+        await _postRepo.SaveChangesAsync();
+        return _mapper.Map<PostDto>(post);
     }
 }
 

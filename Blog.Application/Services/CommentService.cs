@@ -14,7 +14,7 @@ public class CommentService : ICommentService
     }
     public async Task<CommentDto> AddCommentAsync(CreateCommentDto createCommentDto, string userId)
     {
-       var postExists =  _postRepo.GetByIdAsync(createCommentDto.PostId);  
+       var postExists = await _postRepo.GetByIdAsync(createCommentDto.PostId);  
        if (postExists == null)
        {
             return null;
