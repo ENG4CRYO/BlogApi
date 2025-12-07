@@ -12,7 +12,7 @@ public class CommentService : ICommentService
         _mapper = mapper;
         _commentRepo = commentRepo;
     }
-    public async Task<CommentDto> AddCommentAsync(CreateCommentDto createCommentDto, string userId)
+    public async Task<Comment> AddCommentAsync(CreateCommentDto createCommentDto, string userId)
     {
        var postExists = await _postRepo.GetByIdAsync(createCommentDto.PostId);  
        if (postExists == null)
@@ -23,7 +23,7 @@ public class CommentService : ICommentService
          comment.UserId = userId;
          var createdComment = await _commentRepo.AddAsync(comment);
         await _commentRepo.SaveChangesAsync();
-        return _mapper.Map<CommentDto>(createdComment);
+        return _mapper.Map<Comment>(createdComment);
 
     }
 

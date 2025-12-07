@@ -58,7 +58,7 @@ namespace Blog.Api.Controllers
             var result = await _postService.CreatePostAsync(dto, userId);
 
     
-            return CreatedAtAction(nameof(GetById), new { id = 1 }, result);
+            return CreatedAtAction(nameof(GetById), new { id= result.Id }, result);
     
         }
 
