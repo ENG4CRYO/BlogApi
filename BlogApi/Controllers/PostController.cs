@@ -34,7 +34,7 @@ namespace Blog.Api.Controllers
             return Ok(posts);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("post/{id}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
@@ -46,7 +46,7 @@ namespace Blog.Api.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("create-post")]
         public async Task<IActionResult> Create([FromBody] CreatePostDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -63,7 +63,7 @@ namespace Blog.Api.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("update-post/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdatePostDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -79,7 +79,7 @@ namespace Blog.Api.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var userId = User.FindFirst("uid")?.Value;
